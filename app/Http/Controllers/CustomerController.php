@@ -1,0 +1,130 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Customer;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+
+class CustomerController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $query = Customer::query();
+        
+        $query->when($request->filled('first_name'), fn ($q) => $q->where('first_name', 'like', '%' . $request->first_name . '%'));
+        $query->when($request->filled('last_name'), fn ($q) => $q->where('last_name', 'like', '%' . $request->last_name . '%'));
+        $query->when($request->filled('phone'), fn ($q) => $q->where('phone', 'like', '%' . $request->phone . '%'));
+        $query->when($request->filled('city'), fn ($q) => $q->where('city', 'like', $request->city . '%'));
+        $query->when($request->filled('status'), fn ($q) => $q->where('status', $request->status));
+
+        $sort = $request->input('sort', 'id');
+        $direction = $request->input('direction', 'desc');
+
+        $allowedSorts = ['id', 'first_name', 'last_name', 'phone', 'city', 'status', 'created_at', 'updated_at'];
+        if (!in_array($sort, $allowedSorts)) {
+            $sort = 'id';
+        }
+
+        $totalCount = Customer::count();
+        $activeCount = Customer::where('status', 'Active')->count();
+
+        $customers = $query->orderBy($sort, $direction)
+                           ->paginate(10)
+                           ->withQueryString();
+
+        $cities = Customer::select('city')
+            ->distinct()
+            ->pluck('city')
+            ->filter()
+            ->sort()
+            ->values();
+
+       return view('customers.index', compact('customers', 'totalCount', 'activeCount', 'cities'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    { 
+        return view('customers.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'customer_code' => ['required', 'string', 'unique:customers,customer_code'],
+            'first_name' => ['required', 'string'],
+            'last_name' => ['required', 'string'],
+            'gender' => ['required', Rule::in(['Male', 'Female'])],
+            'date_of_birth' => ['nullable', 'date'],
+            'phone' => ['required', 'string'],
+            'email' => ['required', 'email', 'unique:customers,email'],
+            'address' => ['nullable', 'string'],
+            'city' => ['nullable', 'string'],
+            'status' => ['required', Rule::in(['Active', 'Inactive'])],
+        ]);
+
+        Customer::create($validated);
+        return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $customer = Customer::findOrFail($id);
+        return view('customers.show', compact('customer'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $customer = Customer::findOrFail($id);
+        return view('customers.edit', compact('customer'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $customer = Customer::findOrFail($id);
+        $validated = $request->validate([
+            'customer_code' => ['required', 'string', 'unique:customers,customer_code,' . $id],
+            'first_name' => ['required', 'string'],
+            'last_name' => ['required', 'string'],
+            'gender' => ['required', Rule::in(['Male', 'Female'])],
+            'date_of_birth' => ['nullable', 'date'],
+            'phone' => ['required', 'string'],
+            'email' => ['required', 'email', 'unique:customers,email,' . $id],
+            'address' => ['nullable', 'string'],
+            'city' => ['nullable', 'string'],
+            'status' => ['required', Rule::in(['Active', 'Inactive'])],
+        ]);
+
+        $customer->update($validated);
+        return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $customer = Customer::findOrFail($id);
+        $customer->delete();
+        return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
+    }
+}
