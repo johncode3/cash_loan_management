@@ -18,7 +18,6 @@
             font-weight: 600;
         }
         input [type="text"], input[type="email"], input[type="number"] {
-            width: 100%;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -30,6 +29,39 @@
         }
         .action {
             margin-top: 20px;
+        }
+        .btn{
+            display:inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size:0.82rem;
+            text-decoration:none;
+            cursor:pointer;
+            border: none;
+            font-family: inherit
+        }
+        .btn-primary{
+            background:#2563eb;
+            color:#fff
+        }
+        .btn-secondary {
+            background: #6b7280;
+            color: #fff
+        }
+        .btn-warning {
+            background:#d97706;
+            color:#fff
+        }
+        .btn-info {
+            background: #0891b2;
+            color:#fff
+        }
+        .btn-danger {
+            background:#dc2626;
+            color:#fff
+        }
+        .btn:hover{
+            opacity:0.85
         }
     </style>
     </head>
@@ -156,8 +188,8 @@
                 @enderror
             </div>
             <div class="action">
-                <button type="submit">Update Employee</button>
-                <a href="{{ route('employees.index')}}" style="margin-left: 12px">Cancel</a>
+                <button type="submit" class="btn btn-primary">Update Employee</button>
+                <a href="{{ route('employees.index')}}" class="btn btn-secondary" style="margin-left: 12px">Cancel</a>
             </div>
         </form>
     </body>

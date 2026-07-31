@@ -144,7 +144,7 @@
             <div>
                 <label>&nbsp;</label>
                 <button type="submit" class="btn btn-primary">Filter</button>
-                <a href="{{ route('employees.index') }}" class="btn btn-warning">Reset</a>
+                <a href="{{ route('employees.index') }}" class="btn btn-danger">Reset</a>
             </div>
         </form>
 
@@ -199,11 +199,9 @@
                     <td>
                         <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-info">View</a>
                         <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-warning">Edit</a>
-                    </td>
-                    <td>
-                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete {{ $employee->first_name }}?')">
-                        @csrf
-                        @method('DELETE')
+                        <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete {{ $employee->first_name }} {{$employee->last_name}}?')">
+                            @csrf
+                            @method('DELETE')
                         <button type="submit" class=  "btn btn-danger">Delete</button>
                     </form>
                     </td>
