@@ -1,162 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Customer List</title>
-        <style>
-            body {
-                font-family: Arial, Helvetica, sans-serif;
-                padding:20px
-            }
-            h1 {
-                margin-bottom:16px
-            }
-            .toolbar {
-                margin-bottom:14px
-            }
-            table {
-                width:100%;
-                border-collapse:collapse
-            }
-            thead {
-                background:#f3f4f6
-            }
-            th, td {
-                padding: 10px 12px;
-                border:1px solid #d1d5db;
-                text-align:left;
-                font-size:0.9rem
-            }
-            tr:hover td {
-                background:#f9fafb
-            }
-            .badge {
-                display:inline-block;
-                padding: 2px 8px;
-                border-radius: 12px;
-                font-size:0.8rem; font-weight:600
-            }
-            .badge-active {
-                background:#d1fae5;
-                color:#065f46
-            }
-            .badge-inactive {
-                background: #fef3c7;
-                color:#92400e
-            }
-            .badge-resigned{
-                background:#e0e7ff;
-                color:#3730a3
-            }
-            .badge-terminated {
-                background:#fee2e2;
-                color:#991b1b
-            }
-            .btn{
-                display:inline-block;
-                padding: 5px 10px;
-                border-radius: 4px;
-                font-size:0.82rem;
-                text-decoration:none;
-                cursor:pointer;
-                border: none;
-                font-family: inherit
-            }
-            .btn-primary{
-                background:#2563eb;
-                color:#fff
-            }
-            .btn-warning {
-                background:#d97706;
-                color:#fff
-            }
-            .btn-info {
-                background: #0891b2;
-                color:#fff
-            }
-            .btn-danger {
-                background:#dc2626;
-                color:#fff
-            }
-            .btn:hover{
-                opacity:0.85
-            }
-            .filter-bar{
-                display: flex;
-                flex-wrap:wrap;
-                gap:8px;
-                align-items:flex-end;
-                margin-bottom:14px;
-                padding: 12px;
-                background: #f9fafb;
-                border:1px solid #e5e7eb;
-                border-radius:6px
-            }
-            .filter-bar label{
-                font-size:0.78rem;
-                color:#374151;
-                display:block;
-                margin-bottom: 3px
-            }
-            .filter-bar input,.filter-bar select{
-                padding: 5px 8px;
-                border:1px solid #d1d5db;
-                border-radius: 4px;
-                font-size:0.85rem;
-                font-family: inherit
-            }
-            .btn-secondary {
-                background:#6b7280;
-                color:#fff
-            }
-            nav .flex.justify-between.flex-1.sm\:hidden, 
-            nav p.text-sm.text-gray-700.line-height-7 {
-                display: none;
-            }
-
-            nav .relative.z-0.inline-flex.rounded-md.shadow-sm {
-                display: flex;
-                gap: 5px;
-            }
-
-            nav a, nav span {
-                display: inline-block;
-                padding: 6px 12px;
-                border: 1px solid #d1d5db;
-                border-radius: 4px;
-                text-decoration: none;
-                color: #374151;
-                font-size: 0.85rem;
-                background: #fff;
-            }
-
-            nav span.z-10 {
-                background: #2563eb;
-                color: #fff;
-                border-color: #2563eb;
-            }
-
-            nav a:hover {
-                background: #f3f4f6;
-            }
-            ul.pagination {
-                display: flex;
-                justify-content: center;
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
-            .alert-success {
-                background-color: #d1fae5;
-                color: #065f46;
-                padding: 10px 15px;
-                border-radius: 4px;
-                margin-bottom: 16px;
-            }
-        </style>
-    </head>
-    <body>
+@extends('layouts.app')
+@section('content')
+@section('title', 'Create Customer')
+@section('main')
         <h1>Customer List</h1>
         @if (session('success'))
             <div class="alert-success">
@@ -247,11 +92,9 @@
                     <td>
                         <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-info">View</a>
                         <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning">Edit</a>
-                    </td>
-                    <td>
-                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete {{ $employee->first_name }}?')">
-                        @csrf
-                        @method('DELETE')
+                        <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete {{ $customer->first_name }} {{ $customer->last_name }}?')">
+                            @csrf
+                            @method('DELETE')
                         <button type="submit" class=  "btn btn-danger">Delete</button>
                     </form>
                     </td>
@@ -268,5 +111,4 @@
                 {{ $customers->links() }}
             </div>
         @endif
-    </body>
-</html>
+@endsection

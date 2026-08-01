@@ -1,71 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Customer</title>
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            padding: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        input [type="text"], input[type="email"], input[type="number"] {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .error {
-            color: red;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-        .action {
-            margin-top: 20px;
-        }
-        .btn{
-            display:inline-block;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size:0.82rem;
-            text-decoration:none;
-            cursor:pointer;
-            border: none;
-            font-family: inherit
-        }
-        .btn-primary{
-            background:#2563eb;
-            color:#fff
-        }
-        .btn-secondary {
-            background: #6b7280;
-            color: #fff
-        }
-        .btn-warning {
-            background:#d97706;
-            color:#fff
-        }
-        .btn-info {
-            background: #0891b2;
-            color:#fff
-        }
-        .btn-danger {
-            background:#dc2626;
-            color:#fff
-        }
-        .btn:hover{
-            opacity:0.85
-        }
-    </style>
-    </head>
-    <body>
+@extends('layouts.app')
+@section('content')
+@section('title', 'Create Customer')
+@section('main')
         <h1>Create Customer</h1>
         @if ($errors->any())
             <div style="border:1px solid #f5c6cb; background:#f8d7da; padding:10px; margin-bottom:16px; border-radius:4px">
@@ -162,5 +98,4 @@
                 <a href="{{ route('customers.index')}}" class="btn btn-secondary" style="margin-left: 12px">Cancel</a>
             </div>
         </form>
-    </body>
-</html>
+@endsection
