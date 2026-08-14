@@ -13,6 +13,7 @@
             <label for="description">Description:</label>
             <textarea name="description" id="description">{{ $category->description }}</textarea>
         </div>
-        <button type="submit">Update Category</button>
+        <button class="btn btn-primary" type="submit">Update Category</button>
+        <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancel</button>
     </form>
 @endsection

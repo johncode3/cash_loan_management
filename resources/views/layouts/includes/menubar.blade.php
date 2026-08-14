@@ -25,7 +25,7 @@
         <li class="nav-item dropdown user-menu">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
             <img
-                src="../assets/images/user2-160x160.jpg"
+                src="../assets/images/profilePic.jpg"
                 class="user-image rounded-circle shadow"
                 alt="Alexander Pierce"
             />
@@ -34,7 +34,7 @@
             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
             <li class="user-header text-bg-primary">
                 <img
-                src="../assets/images/user2-160x160.jpg"
+                src="../assets/images/profilePic.jpg"
                 class="rounded-circle shadow"
                 alt="Alexander Pierce"
                 />

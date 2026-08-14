@@ -12,5 +12,6 @@
             <textarea name="description" id="description"></textarea>
         </div>
         <button class="btn btn-primary" type="submit">Create Category</button>
+        <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancel</button>
     </form>
 @endsection

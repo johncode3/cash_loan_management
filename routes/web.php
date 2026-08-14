@@ -6,10 +6,15 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\CustomerController;
 
-//Home Page
+//Login Page
 Route::get("/", function () {
-    return "Home Page";
-})->name("home");
+    return view('/auth/login');
+})->name("Login");
+
+//Dashboard Page
+Route::get("dashboard", function () {
+    return view('dashboard');
+})->name("Dashboard");
 
 // Route Fallback for 404 Not Found
 Route::fallback(function () {
@@ -33,11 +38,5 @@ Route::controller(AccountController::class)->group(function () {
         Route::get('register', 'register')->name('register');
         Route::post('register', 'create')->name('create');
         Route::post('logout', 'logout')->name('logout');
-    });
-});
-
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('Welcome');
     });
 });

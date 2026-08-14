@@ -1,6 +1,13 @@
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+    @php
+        $isDashboard = request()->routeIs('Dashboard');
+        $isCategory = request()->routeIs('categories.*');
+        $isCustomer = request()->routeIs('customers.*');
+        $isEmployee = request()->routeIs('employees.*');
+    @endphp
+
     <div class="sidebar-brand">
-        <a href="./index.html" class="brand-link">
+        <a href="{{ route('Dashboard') }}" class="brand-link">
         <img
             src="../assets/images/AdminLTELogo.png"
             alt="Logo"
@@ -19,39 +26,29 @@
             id="navigation"
         >
             <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{ route('Dashboard') }}" class="nav-link {{ $isDashboard ? 'active' : '' }}">
                 <i class="nav-icon bi bi-speedometer"></i>
-                <p>
-                Dashboard
-                <i class="nav-arrow bi bi-chevron-right"></i>
-                </p>
+                <p>Dashboard</p>
             </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                <a href="./index.html" class="nav-link">
-                    <i class="nav-icon bi bi-circle"></i>
-                    <p>Dashboard v1</p>
-                </a>
-                </li>
-            </ul>
             </li>
+            
             <li class="nav-item">
-            <a href="{{route('categories.index')}}" class="nav-link">
-                <i class="nav-icon bi bi-file-earmark"></i>
+            <a href="{{ route('categories.index') }}" class="nav-link {{ $isCategory ? 'active' : '' }}">
+                <i class="nav-icon bi bi-grid"></i>
                 <p>Category</p>
             </a>
 
             </li>
             <li class="nav-item">
-            <a href="{{route('customers.index')}}" class="nav-link">
-                <i class="nav-icon bi bi-file-earmark"></i>
+            <a href="{{ route('customers.index') }}" class="nav-link {{ $isCustomer ? 'active' : '' }}">
+                <i class="nav-icon bi bi-people"></i>
                 <p>Customer</p>
             </a>
             </li>
 
             <li class="nav-item">
-            <a href="{{route('employees.index')}}" class="nav-link">
-                <i class="nav-icon bi bi-file-earmark"></i>
+            <a href="{{ route('employees.index') }}" class="nav-link {{ $isEmployee ? 'active' : '' }}">
+                <i class="nav-icon bi bi-person-check"></i>
                 <p>Employee</p>
             </a>
             </li>

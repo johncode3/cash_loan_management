@@ -124,7 +124,7 @@
         <span class="badge">Oops! Wrong Turn</span>
         <h1>404</h1>
         <p>The page you are looking for was not found.</p>
-        <a href="{{ route('home') }}">Go Back Home</a>
+        <a href="{{ route('Dashboard') }}">Go Back Home</a>
     </main>
 </body>
 </html>
