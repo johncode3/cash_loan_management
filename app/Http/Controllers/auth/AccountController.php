@@ -24,7 +24,7 @@ class AccountController extends Controller
 
         if (Auth::attempt($credentials , $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('welcome');
+            return redirect()->intended('dashboard');
         }
 
         return back()->withErrors([
@@ -52,7 +52,7 @@ class AccountController extends Controller
         ]);
 
         Auth::login($user);
-        return redirect('welcome');
+        return redirect('dashboard');
     }
 
     public function logout(Request $request)

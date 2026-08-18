@@ -29,7 +29,7 @@
                 class="user-image rounded-circle shadow"
                 alt="Alexander Pierce"
             />
-            <span class="d-none d-md-inline">BBU</span>
+            <span class="d-none d-md-inline">JohnCode3</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
             <li class="user-header text-bg-primary">
