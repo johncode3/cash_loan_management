@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('content')
 @section('title', 'Create Customer')
-@section('main')
         <h1>Edit Customer</h1>
         @if ($errors->any())
             <div style="border:1px solid #f5c6cb; background:#f8d7da; padding:10px; margin-bottom:16px; border-radius:4px">

@@ -27,7 +27,7 @@
       <main class="app-main">
         <div class="app-content-header">
           <div class="container-fluid">
-            @yield('main')
+            @yield('content')
           </div>
         </div>
         <div class="app-content">

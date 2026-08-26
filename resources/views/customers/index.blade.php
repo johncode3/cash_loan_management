@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('content')
 @section('title', 'Customer List')
-@section('main')
         <h1>Customer List</h1>
         @if (session('success'))
             <div class="alert-success">

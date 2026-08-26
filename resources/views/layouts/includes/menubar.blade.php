@@ -29,7 +29,7 @@
                 class="user-image rounded-circle shadow"
                 alt="Alexander Pierce"
             />
-            <span class="d-none d-md-inline">JohnCode3</span>
+            <span class="d-none d-md-inline">{{ Auth::user()->name ?? 'User' }}</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
             <li class="user-header text-bg-primary">
@@ -39,13 +39,13 @@
                 alt="Alexander Pierce"
                 />
                 <p>
-                JohnCode3 - Web Developer
+                {{ Auth::user()->name ?? 'User' }}
                 <small>Me and Computer is Peace.</small>
                 </p>
             </li>
             <li class="user-footer">
-                <a href="#" class="btn btn-outline-secondary">Profile</a>
-                <a href="#" class="btn btn-outline-danger float-end">Sign out</a>
+                <a href="{{ route('profile.edit') }}" class="btn btn-outline-secondary">Profile</a>
+                <a href="{{ route('logout') }}" class="btn btn-outline-danger float-end">Sign out</a>
             </li>
             </ul>
         </li>

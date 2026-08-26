@@ -1,42 +1,35 @@
 <?php
 
-use App\Http\Controllers\auth\AccountController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
-//Login Page
-Route::get("/", function () {
-    return view('/auth/login');
-})->name("Login");
-
-//Dashboard Page
-Route::get("dashboard", function () {
-    return view('dashboard');
-})->name("Dashboard");
-
-// Route Fallback for 404 Not Found
-Route::fallback(function () {
-    return response()->view("errors.404", [], 404);
-})->name("404");
-
-//Category Page
-Route::resource('categories', CategoryController::class);
-
-//Employee Page
-Route::resource('employees', EmployeeController::class);
-
-//Customer Page
-Route::resource('customers', CustomerController::class);
-
-//Authentication Routes
-Route::controller(AccountController::class)->group(function () {
-    Route::prefix('accounts')->group(function (){
-        Route::get('login', 'login')->name('login');
-        Route::post('login', 'authenticate')->name('authenticate');
-        Route::get('register', 'register')->name('register');
-        Route::post('register', 'create')->name('create');
-        Route::post('logout', 'logout')->name('logout');
-    });
+// 1. First visit -> Redirect to Dashboard if logged in, otherwise to Login
+Route::get('/', function () {
+    return Auth::check() ? redirect()->route('dashboard') : redirect()->route('login');
 });
+
+// 2. All Authenticated Routes (Protected by session auth)
+Route::middleware(['auth'])->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // Breeze Profile Management (Edit, Change Password, Delete Account)
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Master Data Resources
+    Route::resource('categories', CategoryController::class);
+    Route::resource('customers', CustomerController::class);
+    Route::resource('employees', EmployeeController::class);
+});
+
+// 3. Breeze Authentication Routes (login, register, logout, etc.)
+require __DIR__.'/auth.php';

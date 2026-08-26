@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Edit Employee')
-@section('main')
+@section('content')
         <h1>Edit Employee</h1>
         @if ($errors->any())
             <div style="border:1px solid #f5c6cb; background:#f8d7da; padding:10px; margin-bottom:16px; border-radius:4px">

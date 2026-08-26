@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('content')
 @section('title', 'Create Customer')
-@section('main')
         <h1>Customer Details</h1>
         <div class="card">
             @if ($customer->profile_picture)
