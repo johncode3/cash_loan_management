@@ -23,7 +23,6 @@
     @endif
 
     <div class="row g-4">
-        {{-- Card 1: Profile Info --}}
         <div class="col-md-6">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white py-3">
@@ -51,8 +50,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Role</label>
-                            <input type="text" class="form-control bg-light" value="{{ strtoupper($user->role ?? 'customer') }}" readonly>
+                            <label class="form-label fw-semibold">Account Role</label>
+                            <input type="text" class="form-control" value="{{ ucfirst($user->role) }}" disabled>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Save Profile</button>
@@ -61,7 +60,6 @@
             </div>
         </div>
 
-        {{-- Card 2: Change Password --}}
         <div class="col-md-6">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white py-3">

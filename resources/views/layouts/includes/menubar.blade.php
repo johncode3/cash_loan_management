@@ -40,12 +40,15 @@
                 />
                 <p>
                 {{ Auth::user()->name ?? 'User' }}
-                <small>Me and Computer is Peace.</small>
+                <small>Cash Loan Management System</small>
                 </p>
             </li>
             <li class="user-footer">
-                <a href="{{ route('profile.edit') }}" class="btn btn-outline-secondary">Profile</a>
-                <a href="{{ route('logout') }}" class="btn btn-outline-danger float-end">Sign out</a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-danger float-end">Sign out</button>
+                    <a href="{{ route('profile.edit') }}" class="btn btn-outline-secondary">Profile</a>
+                </form>
             </li>
             </ul>
         </li>

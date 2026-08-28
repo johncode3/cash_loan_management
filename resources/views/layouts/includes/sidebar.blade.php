@@ -16,70 +16,78 @@
     <div class="sidebar-wrapper">
         <nav class="mt-2" aria-label="Main navigation">
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
-                
-                {{-- Dashboard --}}
                 <li class="nav-item">
-                    <a href="{{ route('dashboard') }}" class="nav-link {{ $isDashboard ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}" class="nav-link">
                         <i class="nav-icon bi bi-speedometer2"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
-                
-                <li class="nav-header">LOAN OPERATIONS</li>
 
-                {{-- Loan Application (Customer) --}}
-                <li class="nav-item">
-                    <a href="{{ Route::has('loans.apply') ? route('loans.apply') : '#' }}" class="nav-link">
-                        <i class="nav-icon bi bi-file-earmark-plus"></i>
-                        <p>Apply Loan</p>
-                    </a>
-                </li>
+                <li class="nav-header">LOAN MANAGEMENT</li>
+                @if(Auth::user()->role === 'customer' || Auth::user()->role === 'admin')
+                    <li class="nav-item">
+                        <a href="{{ route('loans.apply') }}" class="nav-link">
+                            <i class="nav-icon bi bi-file-earmark-plus"></i>
+                            <p>Apply Loan</p>
+                        </a>
+                    </li>
+                @endif
 
-                {{-- Pending Approvals (Loan Officer) --}}
-                <li class="nav-item">
-                    <a href="{{ Route::has('loans.pending') ? route('loans.pending') : '#' }}" class="nav-link">
-                        <i class="nav-icon bi bi-clock-history"></i>
-                        <p>Pending Loans</p>
-                    </a>
-                </li>
+                @if(in_array(Auth::user()->role, ['admin', 'loan_officer']))
+                    <li class="nav-item">
+                        <a href="{{ route('loans.pending') }}" class="nav-link">
+                            <i class="nav-icon bi bi-clock-history"></i>
+                            <p>Pending Approvals</p>
+                        </a>
+                    </li>
+                @endif
 
-                {{-- Repayments (Cashier) --}}
-                <li class="nav-item">
-                    <a href="{{ Route::has('repayments.create') ? route('repayments.create') : '#' }}" class="nav-link">
-                        <i class="nav-icon bi bi-cash-stack"></i>
-                        <p>Record Payment</p>
-                    </a>
-                </li>
+                @if(in_array(Auth::user()->role, ['admin', 'cashier']))
+                    <li class="nav-item">
+                        <a href="{{ route('repayments.create') }}" class="nav-link">
+                            <i class="nav-icon bi bi-cash-stack"></i>
+                            <p>Record Payment</p>
+                        </a>
+                    </li>
+                @endif
 
-                <li class="nav-header">MASTER DATA</li>
+                @if(Auth::user()->role === 'admin')
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard.overdue') }}" class="nav-link text-danger">
+                            <i class="nav-icon bi bi-exclamation-triangle text-danger"></i>
+                            <p>Overdue Dashboard</p>
+                        </a>
+                    </li>
+                @endif
 
-                {{-- Categories --}}
-                <li class="nav-item">
-                    <a href="{{ Route::has('categories.index') ? route('categories.index') : '#' }}" class="nav-link {{ $isCategory ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-grid"></i>
-                        <p>Categories</p>
-                    </a>
-                </li>
+                @if(in_array(Auth::user()->role, ['admin', 'loan_officer', 'cashier']))
+                    <li class="nav-header">MASTER DATA</li>
 
-                {{-- Customers --}}
-                <li class="nav-item">
-                    <a href="{{ Route::has('customers.index') ? route('customers.index') : '#' }}" class="nav-link {{ $isCustomer ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-people"></i>
-                        <p>Customers</p>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{{ route('categories.index') }}" class="nav-link">
+                            <i class="nav-icon bi bi-grid"></i>
+                            <p>Categories</p>
+                        </a>
+                    </li>
 
-                {{-- Employees --}}
-                <li class="nav-item">
-                    <a href="{{ Route::has('employees.index') ? route('employees.index') : '#' }}" class="nav-link {{ $isEmployee ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-person-badge"></i>
-                        <p>Employees</p>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{{ route('customers.index') }}" class="nav-link">
+                            <i class="nav-icon bi bi-people"></i>
+                            <p>Customers</p>
+                        </a>
+                    </li>
 
+                    @if(Auth::user()->role === 'admin')
+                        <li class="nav-item">
+                            <a href="{{ route('employees.index') }}" class="nav-link">
+                                <i class="nav-icon bi bi-person-badge"></i>
+                                <p>Employees</p>
+                            </a>
+                        </li>
+                    @endif
+                @endif
             </ul>
 
-            {{-- Real Working Breeze Logout --}}
             <div class="p-3 mt-3 border-top border-secondary border-opacity-25">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

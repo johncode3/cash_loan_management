@@ -32,7 +32,6 @@
         </div>
         <div class="app-content">
           <div class="container-fluid">
-
           </div>
         </div>
       </main>
