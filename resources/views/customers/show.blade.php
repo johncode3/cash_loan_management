@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-@section('title', 'Create Customer')
+@section('title', 'Show Customer')
         <h1>Customer Details</h1>
         <div class="card">
             @if ($customer->profile_picture)
@@ -14,7 +14,7 @@
             </div>
             <div class="row">
                 <div class="label">Gender:</div>
-                <div class="value">{{ $customer->gender }}</div>
+                <div class="value">{{ ucfirst ($customer->gender) }}</div>
             </div>
             <div class="row">
                 <div class="label">Date of Birth:</div>
@@ -49,9 +49,10 @@
                     <span class="badge {{ $badgeClass }}">{{ $customer->status }}</span>
                 </div>
             </div>
+            <div class="actions">
+                <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning">Edit</a>
+                <a href="{{ route('customers.index') }}" class="btn btn-secondary">Back to list</a>
+            </div>
         </div>
-        <div class="actions">
-            <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning">Edit</a>
-            <a href="{{ route('customers.index') }}" class="btn btn-secondary">Back to list</a>
-        </div>
+
 @endsection

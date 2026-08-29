@@ -1,19 +1,43 @@
 @extends('layouts.app')
 @section('title', 'Edit Category')
 @section('content')
+<div class="form-container">
     <h1>Edit Category</h1>
+
+    @if ($errors->any())
+        <div style="border:1px solid #f5c6cb; background:#f8d7da; padding:10px; margin-bottom:16px; border-radius:6px">
+            <ul style="margin: 0 0 0 20px; color: #991b1b">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form action="{{ route('categories.update', $category->id) }}" method="POST">
         @csrf
         @method('PUT')
-        <div>
-            <label for="name">Name:</label>
-            <input type="text" name="name" id="name" value="{{ $category->name }}" required>
+        
+        <div class="form-group">
+            <label for="name">Name: <span style="color:#dc2626">*</span></label>
+            <input type="text" name="name" id="name" value="{{ old('name', $category->name) }}" required>
+            @error('name')
+                <div class="error">{{ $message }}</div>
+            @enderror
         </div>
-        <div>
+
+        <div class="form-group">
             <label for="description">Description:</label>
-            <textarea name="description" id="description">{{ $category->description }}</textarea>
+            <textarea name="description" id="description">{{ old('description', $category->description) }}</textarea>
+            @error('description')
+                <div class="error">{{ $message }}</div>
+            @enderror
         </div>
-        <button class="btn btn-primary" type="submit">Update Category</button>
-        <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancel</button>
+
+        <div class="action">
+            <a href="{{ route('categories.index') }}" class="btn btn-secondary">Cancel</a>
+            <button class="btn btn-primary" type="submit">Update Category</button>
+        </div>
     </form>
+</div>
 @endsection

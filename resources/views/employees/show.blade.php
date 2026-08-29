@@ -15,7 +15,7 @@
             </div>
             <div class="row">
                 <div class="label">Gender:</div>
-                <div class="value">{{ $employee->gender }}</div>
+                <div class="value">{{ ucfirst($employee->gender) }}</div>
             </div>
             <div class="row">
                 <div class="label">Date of Birth:</div>
@@ -64,9 +64,9 @@
                     <span class="badge {{ $badgeClass }}">{{ $employee->status }}</span>
                 </div>
             </div>
-        </div>
-        <div class="actions">
-            <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-warning">Edit</a>
-            <a href="{{ route('employees.index') }}" class="btn btn-secondary">Back to list</a>
+            <div class="actions">
+                <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-warning">Edit</a>
+                <a href="{{ route('employees.index') }}" class="btn btn-secondary">Back to list</a>
+            </div>
         </div>
 @endsection

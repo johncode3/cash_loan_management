@@ -4,29 +4,35 @@
         $isCategory  = request()->routeIs('categories.*');
         $isCustomer  = request()->routeIs('customers.*');
         $isEmployee  = request()->routeIs('employees.*');
-        $isLoan      = request()->routeIs('loans.*');
+        $isUser      = request()->routeIs('users.*');
+        $isApply     = request()->routeIs('loans.apply');
+        $isPending   = request()->routeIs('loans.pending');
+        $isRepay     = request()->routeIs('repayments.*');
+        $isOverdue   = request()->routeIs('dashboard.overdue');
     @endphp
 
     <div class="sidebar-brand">
         <a href="{{ route('dashboard') }}" class="brand-link">
-            <span class="brand-text fw-bold text-primary">Cash Loan App</span>
+            <span class="brand-text fw-bold text-primary">💰 Cash Loan App</span>
         </a>
     </div>
 
     <div class="sidebar-wrapper">
         <nav class="mt-2" aria-label="Main navigation">
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
+           
                 <li class="nav-item">
-                    <a href="{{ route('dashboard') }}" class="nav-link">
+                    <a href="{{ route('dashboard') }}" class="nav-link {{ $isDashboard ? 'active' : '' }}">
                         <i class="nav-icon bi bi-speedometer2"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
 
                 <li class="nav-header">LOAN MANAGEMENT</li>
+
                 @if(Auth::user()->role === 'customer' || Auth::user()->role === 'admin')
                     <li class="nav-item">
-                        <a href="{{ route('loans.apply') }}" class="nav-link">
+                        <a href="{{ Route::has('loans.apply') ? route('loans.apply') : '#' }}" class="nav-link {{ $isApply ? 'active' : '' }}">
                             <i class="nav-icon bi bi-file-earmark-plus"></i>
                             <p>Apply Loan</p>
                         </a>
@@ -35,7 +41,7 @@
 
                 @if(in_array(Auth::user()->role, ['admin', 'loan_officer']))
                     <li class="nav-item">
-                        <a href="{{ route('loans.pending') }}" class="nav-link">
+                        <a href="{{ Route::has('loans.pending') ? route('loans.pending') : '#' }}" class="nav-link {{ $isPending ? 'active' : '' }}">
                             <i class="nav-icon bi bi-clock-history"></i>
                             <p>Pending Approvals</p>
                         </a>
@@ -44,7 +50,7 @@
 
                 @if(in_array(Auth::user()->role, ['admin', 'cashier']))
                     <li class="nav-item">
-                        <a href="{{ route('repayments.create') }}" class="nav-link">
+                        <a href="{{ Route::has('repayments.create') ? route('repayments.create') : '#' }}" class="nav-link {{ $isRepay ? 'active' : '' }}">
                             <i class="nav-icon bi bi-cash-stack"></i>
                             <p>Record Payment</p>
                         </a>
@@ -53,7 +59,7 @@
 
                 @if(Auth::user()->role === 'admin')
                     <li class="nav-item">
-                        <a href="{{ route('dashboard.overdue') }}" class="nav-link text-danger">
+                        <a href="{{ Route::has('dashboard.overdue') ? route('dashboard.overdue') : '#' }}" class="nav-link text-danger {{ $isOverdue ? 'active' : '' }}">
                             <i class="nav-icon bi bi-exclamation-triangle text-danger"></i>
                             <p>Overdue Dashboard</p>
                         </a>
@@ -64,14 +70,14 @@
                     <li class="nav-header">MASTER DATA</li>
 
                     <li class="nav-item">
-                        <a href="{{ route('categories.index') }}" class="nav-link">
+                        <a href="{{ route('categories.index') }}" class="nav-link {{ $isCategory ? 'active' : '' }}">
                             <i class="nav-icon bi bi-grid"></i>
                             <p>Categories</p>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ route('customers.index') }}" class="nav-link">
+                        <a href="{{ route('customers.index') }}" class="nav-link {{ $isCustomer ? 'active' : '' }}">
                             <i class="nav-icon bi bi-people"></i>
                             <p>Customers</p>
                         </a>
@@ -79,9 +85,16 @@
 
                     @if(Auth::user()->role === 'admin')
                         <li class="nav-item">
-                            <a href="{{ route('employees.index') }}" class="nav-link">
+                            <a href="{{ route('employees.index') }}" class="nav-link {{ $isEmployee ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-person-badge"></i>
                                 <p>Employees</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="{{ Route::has('users.index') ? route('users.index') : '#' }}" class="nav-link {{ $isUser ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-person-gear"></i>
+                                <p>Users Management</p>
                             </a>
                         </li>
                     @endif

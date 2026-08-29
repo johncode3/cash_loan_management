@@ -1,19 +1,22 @@
 @extends('layouts.app')
 @section('title', 'Create Employee')
 @section('content')
-        <h1>Create Employee</h1>
-        @if ($errors->any())
-            <div style="border:1px solid #f5c6cb; background:#f8d7da; padding:10px; margin-bottom:16px; border-radius:4px">
-                <strong>There are some problems with your input:</strong>
-                <ul style="margin: 8px 0 0 20px">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach 
-                </ul>
-            </div>
-        @endif
-        <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
+<div class="form-container">
+    <h1>Create Employee</h1>
+    @if ($errors->any())
+        <div style="border:1px solid #f5c6cb; background:#f8d7da; padding:10px; margin-bottom:16px; border-radius:4px">
+            <strong>There are some problems with your input:</strong>
+            <ul style="margin: 8px 0 0 20px">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach 
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="form-row">
             <div class="form-group">
                 <label for="first_name">First Name:</label>
                 <input type="text" id="first_name" name="first_name" value="{{ old('first_name') }}" required>
@@ -21,6 +24,7 @@
                     <div class="error">{{ $message }}</div>
                 @enderror
             </div>
+
             <div class="form-group">
                 <label for="last_name">Last Name:</label>
                 <input type="text" id="last_name" name="last_name" value="{{ old('last_name') }}" required>
@@ -28,6 +32,9 @@
                     <div class="error">{{ $message }}</div>
                 @enderror
             </div>
+        </div>
+        
+        <div class="form-row">
             <div class="form-group">
                 <label for="gender">Gender:</label>
                 <select id="gender" name="gender" required>
@@ -45,21 +52,10 @@
                 @error('date_of_birth')
                     <div class="error">{{ $message }}</div>
                 @enderror
-            </div>
-            <div class="form-group">
-                <label for="position">Position:</label>
-                <input type="text" id="position" name="position" value="{{ old('position') }}" required>
-                @error('position')
-                    <div class="error">{{ $message }}</div>
-                @enderror
-            </div>
-            <div class="form-group">
-                <label for="department">Department:</label>
-                <input type="text" id="department" name="department" value="{{ old('department') }}" required>
-                @error('department')
-                    <div class="error">{{ $message }}</div>
-                @enderror
-            </div>
+            </div> 
+        </div>
+
+        <div class="form-row">
             <div class="form-group">
                 <label for="phone">Phone:</label>
                 <input type="number" id="phone" name="phone" value="{{ old('phone') }}" required>
@@ -74,13 +70,65 @@
                     <div class="error">{{ $message }}</div>
                 @enderror
             </div>
+        </div>
+        
+        <div class="form-row">
             <div class="form-group">
-                <label for="address">Address:</label>
-                <input type="text" id="address" name="address" value="{{ old('address') }}" required>
-                @error('address')
+                <label for="department">Department: <span style="color:#dc2626">*</span></label>
+                <select name="department" id="department" required>
+                    <option value="">-- Select Department --</option>
+                    @php
+                        $departments = [
+                            'Credit & Lending'        => 'Credit & Lending',
+                            'Finance & Accounting'    => 'Finance & Accounting',
+                            'Operations & Cashier'    => 'Operations & Cashier',
+                            'Customer Support'        => 'Customer Support',
+                            'Administration & HR'     => 'Administration & HR',
+                            'Information Technology'  => 'IT & Systems',
+                        ];
+                        $selectedDept = old('department', $employee->department ?? '');
+                    @endphp
+                    @foreach($departments as $key => $label)
+                        <option value="{{ $key }}" {{ $selectedDept === $key ? 'selected' : '' }}>
+                            {{ $label }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('department')
                     <div class="error">{{ $message }}</div>
                 @enderror
             </div>
+
+            <div class="form-group">
+                <label for="position">Position / Role: <span style="color:#dc2626">*</span></label>
+                <select name="position" id="position" required>
+                    <option value="">-- Select Position --</option>
+                    @php
+                        $positions = [
+                            'Branch Manager'          => 'Branch Manager',
+                            'Loan Officer'            => 'Loan Officer',
+                            'Senior Loan Officer'     => 'Senior Loan Officer',
+                            'Cashier'                 => 'Cashier / Teller',
+                            'Accountant'              => 'Accountant',
+                            'Customer Service Officer'=> 'Customer Service Officer',
+                            'IT Support'              => 'IT Support',
+                            'Security'                => 'Security',
+                        ];
+                        $selectedPos = old('position', $employee->position ?? $employee->role ?? '');
+                    @endphp
+                    @foreach($positions as $key => $label)
+                        <option value="{{ $key }}" {{ $selectedPos === $key ? 'selected' : '' }}>
+                            {{ $label }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('position')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+        
+        <div class="form-row">
             <div class="form-group">
                 <label for="hiring_date">Hire Date:</label>
                 <input type="date" id="hiring_date" name="hiring_date" value="{{ old('hiring_date') }}" required>
@@ -92,6 +140,16 @@
                 <label for="salary">Salary:</label>
                 <input type="number" id="salary" name="salary" value="{{ old('salary') }}" step="0.01" required>
                 @error('salary')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" value="{{ old('address') }}" required>
+                @error('address')
                     <div class="error">{{ $message }}</div>
                 @enderror
             </div>
@@ -107,16 +165,19 @@
                     <div class="error">{{ $message }}</div>
                 @enderror
             </div>
-            <div class="form-group">
-                <label for="profile_picture">Profile Picture:</label>
-                <input type="file" id="profile_picture" name="profile_picture" accept="image/*">
-                @error('profile_picture')
-                    <div class="error">{{ $message }}</div>
-                @enderror
-            </div>
-            <div class="action">
-                <button type="submit" class="btn btn-primary">Create Employee</button>
-                <a href="{{ route('employees.index')}}" style="margin-left: 12px" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+        </div>
+        
+        <div class="form-group">
+            <label for="profile_picture">Profile Picture:</label>
+            <input type="file" id="profile_picture" name="profile_picture" accept="image/*">
+            @error('profile_picture')
+                <div class="error">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="action">
+            <button type="submit" class="btn btn-primary">Create Employee</button>
+            <a href="{{ route('employees.index')}}" style="margin-left: 12px" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
 @endsection

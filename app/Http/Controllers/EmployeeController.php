@@ -17,7 +17,8 @@ class EmployeeController extends Controller
         $query = Employee::query();
         $query->when($request->filled('first_name'), fn ($q) => $q->where('first_name', 'like', '%' . $request->first_name . '%'));
         $query->when($request->filled('last_name'), fn ($q) => $q->where('last_name', 'like', '%' . $request->last_name . '%'));
-        $query->when($request->filled('gender'), fn ($q) => $q->where('gender', 'like', '%' . $request->gender . '%'));
+        $query->when($request->filled('department'), fn ($q) => $q->where('department', 'like', '%' . $request->department . '%'));
+        $query->when($request->filled('status'), fn ($q) => $q->where('status', 'like', '%' . $request->status . '%'));
         $orderBy = $request->input('order_by', 'id');
         $orderDir = $request->input('order_dir', 'asc');
         $allowedOrderBy = ['id', 'first_name', 'last_name', 'hiring_date', 'salary'];
