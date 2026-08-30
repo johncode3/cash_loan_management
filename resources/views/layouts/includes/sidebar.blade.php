@@ -47,7 +47,16 @@
                         </a>
                     </li>
                 @endif
-
+                
+                @if(in_array(Auth::user()->role, ['admin', 'loan_officer', 'cashier']))
+                    <li class="nav-item">
+                        <a href="{{ route('loans.index') }}" class="nav-link {{ request()->routeIs('loans.index') || request()->routeIs('loans.schedule') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-calendar-check"></i>
+                            <p>Loan Schedules</p>
+                        </a>
+                    </li>
+                @endif
+                
                 @if(in_array(Auth::user()->role, ['admin', 'cashier']))
                     <li class="nav-item">
                         <a href="{{ Route::has('repayments.create') ? route('repayments.create') : '#' }}" class="nav-link {{ $isRepay ? 'active' : '' }}">

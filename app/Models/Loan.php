@@ -9,9 +9,6 @@ class Loan extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = [
         'customer_id',
         'category_id',
@@ -23,9 +20,6 @@ class Loan extends Model
         'created_by',
     ];
 
-    /**
-     * Type casting for financial fields and dates.
-     */
     protected $casts = [
         'principal_amount' => 'decimal:2',
         'interest_rate'    => 'decimal:2',
@@ -33,25 +27,21 @@ class Loan extends Model
         'disbursement_date'=> 'date',
     ];
 
-    /**
-     * The customer who borrowed the money.
-     */
     public function customer()
     {
         return $this->belongsTo(Customer::class);
     }
 
-    /**
-     * The loan product category (Personal, Business, etc.).
-     */
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-    /**
-     * The User / Loan Officer who created the application.
-     */
+    public function schedules()
+    {
+        return $this->hasMany(LoanSchedule::class);
+    }
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');

@@ -56,16 +56,18 @@
                     <td>{{ $loan->interest_rate }}% / mo</td>
                     <td>{{ $loan->term_months }} Months</td>
                     <td>
-                        <span class="badge badge-pending">Pending</span>
+                        <span class="badge badge-{{ strtolower($loan->status) }}">{{ ucfirst($loan->status) }}</span>
                     </td>
                     <td>
                         <div class="table-actions">
-                            <form action="{{ route('loans.approve', $loan->id) }}" method="POST" style="display: inline; margin:0;" onsubmit="return confirm('Approve loan of ${{ number_format($loan->principal_amount, 2) }} for {{ $loan->customer->first_name }}?');">
-                                @csrf
-                                <button class="btn btn-primary" type="submit" style="background: #10b981; border-color: #10b981;">
-                                    ✓ Approve
-                                </button>
-                            </form>
+                            @if($loan->status === 'Pending')
+                                <form action="{{ route('loans.approve', $loan->id) }}" method="POST" style="display: inline; margin:0;" onsubmit="return confirm('Approve loan for {{ $loan->customer->first_name }}?');">
+                                    @csrf
+                                    <button class="btn btn-primary" type="submit" style="background: #10b981; border-color: #10b981;">
+                                        ✓ Approve
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </td>
                 </tr>

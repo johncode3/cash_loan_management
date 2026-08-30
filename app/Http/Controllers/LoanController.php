@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Customer;
 use App\Models\Category;
 use App\Models\Loan;
-
+use App\Models\LoanSchedule;
+use App\Services\LoanCalculationService;
+use Illuminate\Support\Facades\DB;
 
 class LoanController extends Controller
 {
@@ -35,10 +37,6 @@ class LoanController extends Controller
         return redirect()->route('loans.pending')->with('success', 'Loan application submitted successfully! Status is Pending approval.');
     }
 
-    public function index() {}
-
-    public function show($id) {}
-
     public function approve($id) {
         $loan = Loan::findOrFail($id);
         if ($loan->status !== 'Pending') {
@@ -49,15 +47,17 @@ class LoanController extends Controller
         return redirect()->route('loans.pending')->with('success', "Loan #{$loan->id} for {$loan->customer->first_name} {$loan->customer->last_name} has been approved successfully!");
     }
 
-    public function pending(Request $request) {
-        $query = Loan::with(['customer', 'category'])->where('status', 'Pending');
+    public function pending(Request $request)
+    {
+        $query = Loan::with(['customer', 'category'])
+            ->whereIn('status', ['Pending']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->whereHas('customer', function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
-                ->orWhere('last_name', 'like', "%{$search}%")
-                ->orWhere('customer_code', 'like', "%{$search}%");
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('customer_code', 'like', "%{$search}%");
             });
         }
 
@@ -65,7 +65,68 @@ class LoanController extends Controller
 
         return view('loans.pending', compact('loans'));
     }
-    public function disburse($id) {}
 
-    public function schedule($id) {}
+    public function disburse($id, LoanCalculationService $calculator)
+    {
+        $loan = Loan::with('schedules')->findOrFail($id);
+
+        if ($loan->status === 'Disbursed') {
+            return redirect()->back()->with('error', 'This loan has already been disbursed!');
+        }
+
+        if ($loan->status !== 'Approved') {
+            return redirect()->back()->with('error', 'Only approved loans can be disbursed.');
+        }
+
+        DB::transaction(function () use ($loan, $calculator) {
+            $loan->update([
+                'status'            => 'Disbursed',
+                'disbursement_date' => now(),
+            ]);
+
+            $scheduleData = $calculator->generateSchedule(
+                (float) $loan->principal_amount,
+                (float) $loan->interest_rate,
+                (int) $loan->term_months,
+                now()->format('Y-m-d')
+            );
+
+            foreach ($scheduleData as $row) {
+                $loan->schedules()->create($row);
+            }
+        });
+
+        return redirect()->route('loans.schedule', $loan->id)->with('success', 'Loan disbursed successfully! Repayment schedule has been generated.');
+    }
+
+    public function schedule($id)
+    {
+        $loan = Loan::with(['customer', 'category', 'schedules' => function ($q) {
+            $q->orderBy('installment_no');
+        }])->findOrFail($id);
+
+        return view('loans.schedule', compact('loan'));
+    }
+
+    public function index(Request $request)
+    {
+        $query = Loan::with(['customer', 'category', 'schedules']);
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->whereHas('customer', function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('customer_code', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $loans = $query->latest()->paginate(10)->withQueryString();
+
+        return view('loans.index', compact('loans'));
+    }
 }

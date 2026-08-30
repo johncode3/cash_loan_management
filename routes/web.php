@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return Auth::check() ? redirect()->route('dashboard') : redirect()->route('login');
+    return Auth::check() ? redirect()->route('dashboard') : redirect()->route('register');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('customers', CustomerController::class);
     });
 
+    Route::get('/loans', [LoanController::class, 'index'])->name('loans.index');
     Route::get('/loans/{id}', [LoanController::class, 'show'])->name('loans.show');
     Route::get('/loans/{id}/schedule', [LoanController::class, 'schedule'])->name('loans.schedule');
 });
