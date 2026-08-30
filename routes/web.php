@@ -24,7 +24,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::middleware(['role:customer,admin'])->group(function () {
+    Route::middleware(['role:customer,loan_officer,admin'])->group(function () {
         Route::get('/loans/apply', [LoanController::class, 'create'])->name('loans.apply');
         Route::post('/loans/apply', [LoanController::class, 'store'])->name('loans.store');
     });

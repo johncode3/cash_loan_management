@@ -40,6 +40,6 @@ class LoanPolicy
 
     public function apply (User $user): bool
     {
-        return in_array($user->role, ['customer', 'admin']);
+        return in_array($user->role, ['customer', 'loan_officer', 'admin']);
     }
 }

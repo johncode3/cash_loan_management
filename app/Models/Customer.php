@@ -21,4 +21,12 @@ class Customer extends Model
         'city',
         'status',
     ];
+    protected static function booted()
+    {
+        static::creating(function ($customer) {
+            if (empty($customer->customer_code)) {
+            $customer->customer_code = 'CUST-' . now()->format('dmy-His');
+        }
+        });
+    }
 }

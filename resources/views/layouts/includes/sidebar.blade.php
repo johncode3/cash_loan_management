@@ -30,7 +30,7 @@
 
                 <li class="nav-header">LOAN MANAGEMENT</li>
 
-                @if(Auth::user()->role === 'customer' || Auth::user()->role === 'admin')
+                @if(in_array(Auth::user()->role, ['customer', 'loan_officer', 'admin']))
                     <li class="nav-item">
                         <a href="{{ Route::has('loans.apply') ? route('loans.apply') : '#' }}" class="nav-link {{ $isApply ? 'active' : '' }}">
                             <i class="nav-icon bi bi-file-earmark-plus"></i>

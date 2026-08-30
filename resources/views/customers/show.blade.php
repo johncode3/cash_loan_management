@@ -3,11 +3,10 @@
 @section('title', 'Show Customer')
         <h1>Customer Details</h1>
         <div class="card">
-            @if ($customer->profile_picture)
-                <div style="margin-bottom: 20px;">
-                    <img src="{{ asset('storage/' . $customer->profile_picture) }}" alt="Profile Picture" style="height: 100px; width: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #e5e7eb;">
-                </div>
-            @endif
+            <div class="row">
+                <div class="label">Customer Code:</div>
+                <div class="value">{{ $customer->customer_code }}</div>
+            </div>
             <div class="row">
                 <div class="label">Full Name:</div>
                 <div class="value">{{ $customer->first_name }} {{ $customer->last_name }}</div>

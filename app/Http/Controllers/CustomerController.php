@@ -52,7 +52,8 @@ class CustomerController extends Controller
      */
     public function create()
     { 
-        return view('customers.create');
+            $autoCustomerCode = 'CUST-' . now()->format('dmy-His');
+            return view('customers.create', compact('autoCustomerCode'));
     }
 
     /**
@@ -61,20 +62,22 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'customer_code' => ['required', 'string', 'unique:customers,customer_code'],
-            'first_name' => ['required', 'string'],
-            'last_name' => ['required', 'string'],
-            'gender' => ['required', Rule::in(['Male', 'Female'])],
+            'customer_code' => ['nullable', 'string', 'unique:customers,customer_code'],
+            'first_name'    => ['required', 'string', 'max:100'],
+            'last_name'     => ['required', 'string', 'max:100'],
+            'gender'        => ['required', Rule::in(['Male', 'Female'])],
             'date_of_birth' => ['nullable', 'date'],
-            'phone' => ['required', 'string'],
-            'email' => ['required', 'email', 'unique:customers,email'],
-            'address' => ['nullable', 'string'],
-            'city' => ['nullable', 'string'],
-            'status' => ['required', Rule::in(['Active', 'Inactive'])],
+            'phone'         => ['required', 'string', 'unique:customers,phone'],
+            'email'         => ['required', 'email', 'unique:customers,email'],
+            'address'       => ['nullable', 'string'],
+            'city'          => ['nullable', 'string'],
+            'status'        => ['required', Rule::in(['Active', 'Inactive'])],
         ]);
 
-        Customer::create($validated);
-        return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
+        $customer = Customer::create($validated);
+
+        return redirect()->route('customers.index')->with('success',"Customer {$customer->first_name} {$customer->last_name} created successfully! (Code: {$customer->customer_code})"
+        );
     }
 
     /**
@@ -101,21 +104,24 @@ class CustomerController extends Controller
     public function update(Request $request, string $id)
     {
         $customer = Customer::findOrFail($id);
+
         $validated = $request->validate([
-            'customer_code' => ['required', 'string', 'unique:customers,customer_code,' . $id],
-            'first_name' => ['required', 'string'],
-            'last_name' => ['required', 'string'],
-            'gender' => ['required', Rule::in(['Male', 'Female'])],
+            'first_name'    => ['required', 'string', 'max:100'],
+            'last_name'     => ['required', 'string', 'max:100'],
+            'gender'        => ['required', Rule::in(['Male', 'Female'])],
             'date_of_birth' => ['nullable', 'date'],
-            'phone' => ['required', 'string'],
-            'email' => ['required', 'email', 'unique:customers,email,' . $id],
-            'address' => ['nullable', 'string'],
-            'city' => ['nullable', 'string'],
-            'status' => ['required', Rule::in(['Active', 'Inactive'])],
+            'phone'         => ['required', 'string', Rule::unique('customers', 'phone')->ignore($customer->id)],
+            'email'         => ['required', 'email', Rule::unique('customers', 'email')->ignore($customer->id)],
+            'address'       => ['nullable', 'string'],
+            'city'          => ['nullable', 'string'],
+            'status'        => ['required', Rule::in(['Active', 'Inactive'])],
         ]);
+        
+        unset($validated['customer_code']);
 
         $customer->update($validated);
-        return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
+
+        return redirect()->route('customers.index')->with('success', "Customer {$customer->first_name} {$customer->last_name} updated successfully.");
     }
 
     /**

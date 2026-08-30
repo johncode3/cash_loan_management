@@ -20,7 +20,7 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="customer_code">Customer Code <span style="color:red">*</span></label>
-                <input type="text" id="customer_code" name="customer_code" value="{{ old('customer_code', $customer->customer_code) }}" required>
+                <input type="text" id="customer_code" name="customer_code" value="{{ old('customer_code', $customer->customer_code) }}" readonly style="background-color: #f1f5f9; color: #64748b; cursor: not-allowed;">
                 @error('customer_code')
                     <div class="error">{{ $message }}</div>
                 @enderror

@@ -18,11 +18,9 @@
         @csrf
         <div class="form-row">
             <div class="form-group">
-                <label for="customer_code">Customer Code <span style="color:red">*</span></label>
-                <input type="text" id="customer_code" name="customer_code" value="{{ old('customer_code') }}" required>
-                @error('customer_code')
-                    <div class="error">{{ $message }}</div>
-                @enderror
+                <label for="customer_code">Customer Code (System Assigned):</label>
+                <input type="text" name="customer_code" id="customer_code" value="{{ $autoCustomerCode }}" readonly style="background-color: #f1f5f9; color: #0f172a; font-weight: 700; cursor: not-allowed;">
+                <small style="color: #64748b; font-size: 0.8rem; display: block; margin-top: 4px;">This unique code is automatically assigned to the customer.</small>
             </div>
 
             <div class="form-group">

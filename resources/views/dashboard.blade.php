@@ -1,12 +1,20 @@
 @extends('layouts.app')
 @section('title', 'Dashboard')
-
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('assets/css/crud/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/bladeStyle/dashboard.css') }}">
 @endpush
-
 @section('content')
+@if (session('success'))
+    <div class="alert-success" style="background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+        <span>✓</span> {{ session('success') }}
+    </div>
+@endif
 
+@if (session('error'))
+    <div class="alert-danger" style="background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+        <span>⚠</span> {{ session('error') }}
+    </div>
+@endif
 <div class="welcome-banner">
     <div class="welcome-text">
         <h2>Welcome back, {{ Auth::user()->name }}! 👋</h2>

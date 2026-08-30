@@ -20,7 +20,8 @@ return new class extends Migration
             $table->integer('term_months');
             $table->enum('status', ['Pending', 'Approved', 'Disbursed', 'Rejected'])->default('Pending');
             $table->date('disbursement_date')->nullable();
-            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete(); 
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            
             $table->timestamps();
         });
     }
