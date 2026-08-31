@@ -47,7 +47,6 @@ class LoanCalculationService
                 'status'         => 'Pending',
             ];
         }
-
         return $schedules;
     }
 }

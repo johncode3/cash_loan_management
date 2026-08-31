@@ -89,6 +89,8 @@ h1 {
 .btn-danger { background: #dc2626; color: #fff; }
 .btn-danger:hover { background: #b91c1c; }
 
+.btn-success { background: #16a34a; color: #fff; }
+.btn-success:hover { background: #15803d; }
 hr {
     border: none;
     border-top: 1px solid #e2e8f0;

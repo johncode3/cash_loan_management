@@ -23,33 +23,27 @@
             </form>
         </li>
         <li class="nav-item dropdown user-menu">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-            <img
-                src="../assets/images/profilePic.jpg"
-                class="user-image rounded-circle shadow"
-                alt="Alexander Pierce"
-            />
-            <span class="d-none d-md-inline">{{ Auth::user()->name ?? 'User' }}</span>
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="{{ asset('assets/images/CashLogo.png') }}" class="user-image rounded-circle shadow" alt="System Logo" style="width: 32px; height: 32px; object-fit: contain; background: #fff; padding: 2px;">
+                <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
             </a>
+            
             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-            <li class="user-header text-bg-primary">
-                <img
-                src="../assets/images/profilePic.jpg"
-                class="rounded-circle shadow"
-                alt="Alexander Pierce"
-                />
-                <p>
-                {{ Auth::user()->name ?? 'User' }}
-                <small>Cash Loan Management System</small>
-                </p>
-            </li>
-            <li class="user-footer">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="btn btn-outline-danger float-end">Sign out</button>
-                    <a href="{{ route('profile.edit') }}" class="btn btn-outline-secondary">Profile</a>
-                </form>
-            </li>
+                <li class="user-header text-bg-primary">
+                    <img src="{{ asset('assets/images/CashLogo.png') }}" class="rounded-circle shadow" alt="System Logo" style="width: 60px; height: 60px; object-fit: contain; background: #fff; padding: 4px; margin-bottom: 8px;">
+                    <p>
+                        {{ Auth::user()->name }}
+                        <small>{{ ucfirst(Auth::user()->role) }} • Cash Loan Management</small>
+                    </p>
+                </li>
+                
+                <li class="user-footer">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <a href="{{ route('profile.edit') }}" class="btn btn-outline-secondary">Profile</a>
+                        <button type="submit" class="btn btn-outline-danger float-end">Sign out</button>
+                    </form>
+                </li>
             </ul>
         </li>
         </ul>

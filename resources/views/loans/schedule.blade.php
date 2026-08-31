@@ -107,6 +107,8 @@
 </div>
 
 <div class="actions" style="margin-top: 20px;">
-    <a href="{{ route('loans.index') }}" class="btn btn-secondary">Back to All Loans</a>
+    <a href="{{ route('loans.index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Back to Loans
+    </a>
 </div>
 @endsection

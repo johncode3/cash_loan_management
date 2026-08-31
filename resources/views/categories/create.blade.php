@@ -33,8 +33,8 @@
         </div>
 
         <div class="action">
-            <a href="{{ route('categories.index') }}" class="btn btn-secondary">Cancel</a>
-            <button class="btn btn-primary" type="submit">Create Category</button>
+            <a href="{{ route('categories.index') }}" class="btn btn-danger"><i class="bi bi-x-circle"></i> Cancel</a>
+            <button class="btn btn-primary" type="submit"><i class="bi bi-plus-circle"></i> Create Category</button>
         </div>
     </form>
 </div>

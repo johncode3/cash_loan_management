@@ -23,7 +23,7 @@
 
     @if(Auth::user()->role === 'customer')
         <a href="{{ Route::has('loans.apply') ? route('loans.apply') : '#' }}" class="btn btn-primary">
-            + Apply for a Loan
+            <i class="bi bi-file-earmark-plus"></i> Apply for a Loan
         </a>
     @endif
 </div>
@@ -78,25 +78,26 @@
 
     <div class="section-card">
         <h3>Quick Operations</h3>
+        {{-- In resources/views/dashboard.blade.php --}}
         <div class="quick-actions-list">
             @if(in_array(Auth::user()->role, ['admin', 'loan_officer']))
                 <a href="{{ Route::has('loans.pending') ? route('loans.pending') : '#' }}" class="btn btn-outline">
-                    Review Pending Loans
+                    <i class="bi bi-clock-history"></i> Review Pending Loans
                 </a>
             @endif
 
             @if(in_array(Auth::user()->role, ['admin', 'cashier']))
                 <a href="{{ Route::has('repayments.create') ? route('repayments.create') : '#' }}" class="btn btn-outline">
-                Record Customer Repayment
+                    <i class="bi bi-wallet2"></i> Record Repayment
                 </a>
             @endif
 
             <a href="{{ route('customers.create') }}" class="btn btn-outline">
-                Add New Customer
+                <i class="bi bi-person-plus"></i> Add New Customer
             </a>
 
             <a href="{{ route('categories.index') }}" class="btn btn-outline">
-                Manage Loan Categories
+                <i class="bi bi-tags"></i> Manage Categories
             </a>
         </div>
     </div>

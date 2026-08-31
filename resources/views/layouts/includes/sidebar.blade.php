@@ -13,7 +13,8 @@
 
     <div class="sidebar-brand">
         <a href="{{ route('dashboard') }}" class="brand-link">
-            <span class="brand-text fw-bold text-primary">💰 Cash Loan App</span>
+            <img src="{{ asset('assets/images/CashLogo.png') }}" alt="Logo" class="brand-image opacity-75 shadow">
+            <span class="brand-text fw-bold text-primary ms-2">Cash Loan App</span>
         </a>
     </div>
 

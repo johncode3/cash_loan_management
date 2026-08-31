@@ -1,11 +1,14 @@
 @extends('layouts.app')
 @section('title', 'All Loans & Schedules')
-
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/crud/index.css') }}">
 @endpush
-
 @section('content')
+@if ($errors->has('disburse_error'))
+    <div style="background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-weight: 500;">
+        ⚠ {{ $errors->first('disburse_error') }}
+    </div>
+@endif
 <h1>All Loans & Schedules</h1>
 
 @if (session('success'))
@@ -15,7 +18,9 @@
 @endif
 
 <div class="toolbar">
-    <a href="{{ route('loans.apply') }}" class="btn btn-primary">+ Apply New Loan</a>
+    <a href="{{ route('loans.apply') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Apply New Loan
+    </a>
     <div style="font-size: 0.9rem; color: #475569;">
         Total Loans: <strong>{{ $loans->total() }}</strong>
     </div>
@@ -38,7 +43,7 @@
     <div>
         <label>&nbsp;</label>
         <button type="submit" class="btn btn-primary">Filter</button>
-        <a href="{{ route('loans.index') }}" class="btn btn-secondary">Reset</a>
+        <a href="{{ route('loans.index') }}" class="btn btn-danger">Reset</a>
     </div>
 </form>
 
@@ -83,24 +88,21 @@
                 </td>
                 <td>
                     <div class="table-actions">
-
+                        <a href="{{ route('loans.show', $loan->id) }}" class="btn btn-info">
+                            <i class="bi bi-eye me-1"></i> View
+                        </a>
                         @if($loan->status === 'Disbursed')
-                            <a href="{{ route('loans.schedule', $loan->id) }}" class="btn btn-info">
-                                📅 View Schedule
-                            </a>
+                        <a href="{{ route('loans.schedule', $loan->id) }}" class="btn btn-danger">
+                            <i class="bi bi-calendar3 me-1"></i> Schedule
+                        </a>
                         @elseif($loan->status === 'Approved' && Auth::user()->role === 'admin')
-
-                            <form action="{{ route('loans.disburse', $loan->id) }}" method="POST" style="display:inline; margin:0;">
+                            <form action="{{ route('loans.disburse', $loan->id) }}" method="POST" style="display:inline; margin:0;" onsubmit="return confirm('Disburse cash and generate schedule for this loan?');">
                                 @csrf
-                                <button type="submit" class="btn btn-primary" style="background: #2563eb;">
-                                    💵 Disburse
+                                <button type="submit" class="btn btn-warning" style="background: #2563eb;">
+                                    <i class="bi bi-cash-stack me-1"></i> Disburse
                                 </button>
                             </form>
-                        @else
-                            <a href="{{ route('loans.pending') }}" class="btn btn-secondary">
-                                ⏳ Pending Review
-                            </a>
-                        @endif
+                        @endif 
                     </div>
                 </td>
             </tr>

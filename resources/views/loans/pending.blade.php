@@ -1,8 +1,12 @@
 @extends('layouts.app')
 @section('title', 'Pending Loans List')
 @section('content')
+@if ($errors->has('disburse_error'))
+    <div style="background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-weight: 500;">
+        ⚠ {{ $errors->first('disburse_error') }}
+    </div>
+@endif
 <h1>Pending Loans List</h1>
-
 @if (session('success'))
     <div class="alert-success">
         {{ session('success') }}
@@ -16,7 +20,9 @@
 @endif
 
 <div class="toolbar">
-    <a href="{{ route('loans.apply') }}" class="btn btn-primary">+ Apply New Loan</a>
+    <a href="{{ route('loans.apply') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i> Apply New Loan
+    </a>
 </div>
 <form action="{{ route('loans.pending') }}" method="GET" class="filter-bar">
     <div>
@@ -25,7 +31,9 @@
     </div>
     <div>
         <label>&nbsp;</label>
-        <a href="{{ route('loans.pending') }}" class="btn btn-danger">Clear</a>
+        <a href="{{ route('loans.pending') }}" class="btn btn-danger">
+            <i class="bi bi-x-circle me-1"></i> Clear
+        </a>
     </div>
 </form>
 
@@ -63,8 +71,8 @@
                             @if($loan->status === 'Pending')
                                 <form action="{{ route('loans.approve', $loan->id) }}" method="POST" style="display: inline; margin:0;" onsubmit="return confirm('Approve loan for {{ $loan->customer->first_name }}?');">
                                     @csrf
-                                    <button class="btn btn-primary" type="submit" style="background: #10b981; border-color: #10b981;">
-                                        ✓ Approve
+                                    <button class="btn btn-success" type="submit">
+                                        <i class="bi bi-check-circle me-1"></i> Approve
                                     </button>
                                 </form>
                             @endif

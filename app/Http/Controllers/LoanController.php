@@ -10,6 +10,7 @@ use App\Models\Loan;
 use App\Models\LoanSchedule;
 use App\Services\LoanCalculationService;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\DisburseLoanRequest;
 
 class LoanController extends Controller
 {
@@ -66,19 +67,12 @@ class LoanController extends Controller
         return view('loans.pending', compact('loans'));
     }
 
-    public function disburse($id, LoanCalculationService $calculator)
+    public function disburse(DisburseLoanRequest $request, $id, LoanCalculationService $calculator)
     {
         $loan = Loan::with('schedules')->findOrFail($id);
 
-        if ($loan->status === 'Disbursed') {
-            return redirect()->back()->with('error', 'This loan has already been disbursed!');
-        }
-
-        if ($loan->status !== 'Approved') {
-            return redirect()->back()->with('error', 'Only approved loans can be disbursed.');
-        }
-
         DB::transaction(function () use ($loan, $calculator) {
+
             $loan->update([
                 'status'            => 'Disbursed',
                 'disbursement_date' => now(),
@@ -90,7 +84,7 @@ class LoanController extends Controller
                 (int) $loan->term_months,
                 now()->format('Y-m-d')
             );
-
+            
             foreach ($scheduleData as $row) {
                 $loan->schedules()->create($row);
             }
@@ -128,5 +122,22 @@ class LoanController extends Controller
         $loans = $query->latest()->paginate(10)->withQueryString();
 
         return view('loans.index', compact('loans'));
+    }
+
+    public function show($id)
+    {
+        $loan = Loan::with([
+            'customer',
+            'category',
+            'creator',
+            'schedules',
+        ])->findOrFail($id);
+
+        $totalPrincipal   = (float) $loan->principal_amount;
+        $totalScheduleDue = (float) $loan->schedules->sum('total_due');
+        $totalPaid        = 0.00;
+        $remainingBalance = $totalScheduleDue;
+
+        return view('loans.show', compact('loan', 'totalPrincipal', 'totalPaid', 'remainingBalance', 'totalScheduleDue'));
     }
 }
