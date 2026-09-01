@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\RepaymentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,10 +17,8 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -53,6 +52,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/loans', [LoanController::class, 'index'])->name('loans.index');
     Route::get('/loans/{id}', [LoanController::class, 'show'])->name('loans.show');
     Route::get('/loans/{id}/schedule', [LoanController::class, 'schedule'])->name('loans.schedule');
+
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/dashboard/overdue', [DashboardController::class, 'overdue'])->name('dashboard.overdue');
+        Route::post('/loans/{id}/disburse', [LoanController::class, 'disburse'])->name('loans.disburse');
+        Route::resource('employees', EmployeeController::class);
+        Route::resource('users', UserController::class); // <-- Add this!
+    });
 });
 
 require __DIR__.'/auth.php';

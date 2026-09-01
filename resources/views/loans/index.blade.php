@@ -42,8 +42,8 @@
     </div>
     <div>
         <label>&nbsp;</label>
-        <button type="submit" class="btn btn-primary">Filter</button>
-        <a href="{{ route('loans.index') }}" class="btn btn-danger">Reset</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-funnel"></i> Filter</button>
+        <a href="{{ route('loans.index') }}" class="btn btn-danger"><i class="bi bi-arrow-counterclockwise"></i> Reset</a>
     </div>
 </form>
 
@@ -89,7 +89,7 @@
                 <td>
                     <div class="table-actions">
                         <a href="{{ route('loans.show', $loan->id) }}" class="btn btn-info">
-                            <i class="bi bi-eye me-1"></i> View
+                            <i class="bi bi-eye"></i>
                         </a>
                         @if($loan->status === 'Disbursed')
                         <a href="{{ route('loans.schedule', $loan->id) }}" class="btn btn-danger">

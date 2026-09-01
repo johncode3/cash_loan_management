@@ -11,7 +11,7 @@
 @endif
 
 <div class="toolbar">
-    <a href="{{ route('employees.create') }}" class="btn btn-primary">+ Create New Employee</a>
+    <a href="{{ route('employees.create') }}" class="btn btn-primary"><i class="bi bi-person-plus"></i>Create New Employee</a>
 </div>
 
 <form action="{{route('employees.index')}}" method="GET" class="filter-bar">
@@ -46,8 +46,8 @@
     </div>
     <div>
         <label>&nbsp;</label>
-        <button type="submit" class="btn btn-primary">Filter</button>
-        <a href="{{ route('employees.index') }}" class="btn btn-danger">Reset</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-funnel"></i> Filter</button>
+        <a href="{{ route('employees.index') }}" class="btn btn-danger"><i class="bi bi-arrow-counterclockwise"></i> Reset</a>
     </div>
 </form>
 
@@ -97,12 +97,12 @@
 
                 <td>
                     <div class="table-actions">
-                        <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-info">View</a>
-                        <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-warning">Edit</a>
+                        <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-info"><i class="bi bi-eye"></i></a>
+                        <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
                         <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" style="display:inline; margin:0;" onsubmit="return confirm('Delete employee {{ $employee->first_name }} {{ $employee->last_name }}?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i></button>
                         </form>
                     </div>
                 </td>

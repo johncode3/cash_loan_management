@@ -16,13 +16,51 @@ class LoanController extends Controller
 {
     public function create()
     {
-        $customers = Customer::where('status', 'Active')->orderBy('first_name')->get();
+        $user = Auth::user();
+        $myCustomer = null;
+        $customers = collect();
+
+        // 1. If Logged in as CUSTOMER -> Auto-find or create their Customer profile
+        if ($user->role === 'customer') {
+            $nameParts = explode(' ', $user->name, 2);
+            $firstName = $nameParts[0] ?? $user->name;
+            $lastName  = $nameParts[1] ?? 'Customer';
+
+            $myCustomer = Customer::firstOrCreate(
+                ['email' => $user->email],
+                [
+                    'customer_code' => 'CUST-' . now()->format('dmy-His'),
+                    'first_name'    => $firstName,
+                    'last_name'     => $lastName,
+                    'gender'        => 'Male',
+                    'phone'         => '012' . rand(100000, 999999),
+                    'address'       => 'Phnom Penh',
+                    'city'          => 'Phnom Penh',
+                    'status'        => 'Active',
+                ]
+            );
+        } else {
+            // 2. If Logged in as LOAN OFFICER / ADMIN -> Load dropdown list for walk-in clients
+            $customers = Customer::where('status', 'Active')->orderBy('first_name')->get();
+        }
+
         $categories = Category::orderBy('name')->get();
-        return view('loans.apply', compact('customers', 'categories'));
+
+        return view('loans.apply', compact('customers', 'categories', 'myCustomer'));
     }
 
     public function store(Request $request)
     {
+        $user = Auth::user();
+
+        // 1. Security Check: If customer, force their own customer ID (prevent tampering)
+        if ($user->role === 'customer') {
+            $customer = Customer::where('email', $user->email)->first();
+            $customerId = $customer ? $customer->id : $request->customer_id;
+        } else {
+            $customerId = $request->customer_id;
+        }
+
         $validated = $request->validate([
             'customer_id'      => 'required|exists:customers,id',
             'category_id'      => 'nullable|exists:categories,id',
@@ -31,11 +69,13 @@ class LoanController extends Controller
             'term_months'      => 'required|integer|min:1|max:60',
         ]);
 
-        $validated['status'] = 'Pending';
-        $validated['created_by'] = Auth::id();
+        $validated['customer_id'] = $customerId;
+        $validated['status']      = 'Pending';
+        $validated['created_by']  = $user->id;
 
         Loan::create($validated);
-        return redirect()->route('loans.pending')->with('success', 'Loan application submitted successfully! Status is Pending approval.');
+
+        return redirect()->route('dashboard')->with('success', 'Loan application submitted successfully! Status is Pending approval.');
     }
 
     public function approve($id) {
@@ -104,7 +144,13 @@ class LoanController extends Controller
 
     public function index(Request $request)
     {
+        $user = Auth::user();
         $query = Loan::with(['customer', 'category', 'schedules']);
+
+        if ($user->role === 'customer') {
+            $customer = Customer::where('email', $user->email)->first();
+            $query->where('customer_id', $customer ? $customer->id : 0);
+        }
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -131,12 +177,14 @@ class LoanController extends Controller
             'category',
             'creator',
             'schedules',
+            'repayments.cashier', // Real Repayments!
         ])->findOrFail($id);
 
+        // Task B.12: Live Dynamic Financial Calculations
         $totalPrincipal   = (float) $loan->principal_amount;
         $totalScheduleDue = (float) $loan->schedules->sum('total_due');
-        $totalPaid        = 0.00;
-        $remainingBalance = $totalScheduleDue;
+        $totalPaid        = (float) $loan->repayments->sum('amount_paid');
+        $remainingBalance = max(0, $totalScheduleDue - $totalPaid);
 
         return view('loans.show', compact('loan', 'totalPrincipal', 'totalPaid', 'remainingBalance', 'totalScheduleDue'));
     }

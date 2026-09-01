@@ -1,47 +1,64 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@extends('layouts.guest')
+@section('title', 'Login - Cash Loan Management')
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+@section('content')
+<div class="auth-wrapper">
+    <div class="auth-card">
+        
+        {{-- Brand Logo & Header --}}
+        <div class="brand-header">
+            <img src="{{ asset('assets/images/CashLogo.png') }}" alt="Logo">
+            <h2>Cash Loan Management</h2>
+            <p>Sign in to your account</p>
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        {{-- Error Alerts --}}
+        @if ($errors->any())
+            <div class="auth-alert-error">
+                <strong>Login Failed:</strong> Please check your email or password.
+            </div>
+        @endif
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+        {{-- Login Form --}}
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" name="email" id="email" value="{{ old('email') }}" placeholder="e.g. admin@loan.com" required autofocus>
+                @error('email')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+                @error('password')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="remember-row">
+                <label for="remember_me">
+                    <input id="remember_me" type="checkbox" name="remember">
+                    <span>Remember me</span>
+                </label>
+
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}">Forgot password?</a>
+                @endif
+            </div>
+
+            <button type="submit" class="btn-auth">
+                <i class="bi bi-box-arrow-in-right" style="margin-right: 6px;"></i> Sign In
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Don't have an account? <a href="{{ route('register') }}">Create customer account</a>
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+    </div>
+</div>
+@endsection
