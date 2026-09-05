@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerController extends Controller
 {
@@ -74,9 +77,21 @@ class CustomerController extends Controller
             'status'        => ['required', Rule::in(['Active', 'Inactive'])],
         ]);
 
-        $customer = Customer::create($validated);
+        $validated['customer_code'] = 'CUST-' . now()->format('dmy-His');
+        $fullName = trim($validated['first_name'] . ' ' . $validated['last_name']);
 
-        return redirect()->route('customers.index')->with('success',"Customer {$customer->first_name} {$customer->last_name} created successfully! (Code: {$customer->customer_code})"
+        DB::transaction(function () use ($validated, $fullName) {
+            $customer = Customer::create($validated);
+
+            User::create([
+                'name' => $fullName,
+                'email' => $validated['email'],
+                'password' => Hash::make('password123'),
+                'customer_id' => $customer,
+            ]);
+        });
+
+        return redirect()->route('customers.index')->with('success',"Customer {$fullName} created successfully! Online login account provisioned with default password: password123"
         );
     }
 
