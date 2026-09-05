@@ -3,64 +3,52 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // Common password for all test accounts
-        $password = Hash::make('12345678');
+        $password = Hash::make('password123');
 
-        // 1. Admin (Can Disburse, View Overdue Dashboard, Manage System)
+        // 1. Admin Account
         User::updateOrCreate(
             ['email' => 'admin@loan.com'],
-            [
-                'name' => 'System Admin',
-                'role' => 'admin',
-                'password' => $password,
-                'email_verified_at' => now(),
-            ]
+            ['name' => 'System Admin', 'role' => 'admin', 'password' => $password, 'email_verified_at' => now()]
         );
 
-        // 2. Loan Officer (Can Approve / Reject pending loan applications)
+        // 2. Loan Officer Accounts
         User::updateOrCreate(
             ['email' => 'officer@loan.com'],
-            [
-                'name' => 'Johnny (Loan Officer)',
-                'role' => 'loan_officer',
-                'password' => $password,
-                'email_verified_at' => now(),
-            ]
+            ['name' => 'Sokha (Loan Officer)', 'role' => 'loan_officer', 'password' => $password, 'email_verified_at' => now()]
+        );
+        User::updateOrCreate(
+            ['email' => 'officer2@loan.com'],
+            ['name' => 'Piseth (Loan Officer)', 'role' => 'loan_officer', 'password' => $password, 'email_verified_at' => now()]
         );
 
-        // 3. Cashier (Can Record repayments and view payment receipts)
+        // 3. Cashier Accounts
         User::updateOrCreate(
             ['email' => 'cashier@loan.com'],
-            [
-                'name' => 'Mav (Cashier)',
-                'role' => 'cashier',
-                'password' => $password,
-                'email_verified_at' => now(),
-            ]
+            ['name' => 'Chanthy (Cashier)', 'role' => 'cashier', 'password' => $password, 'email_verified_at' => now()]
+        );
+        User::updateOrCreate(
+            ['email' => 'cashier2@loan.com'],
+            ['name' => 'Sreypov (Cashier)', 'role' => 'cashier', 'password' => $password, 'email_verified_at' => now()]
         );
 
-        // 4. Customer (Can Apply for loans and view personal schedules)
+        // 4. Case Study Customer Account (Dara Sok)
         User::updateOrCreate(
             ['email' => 'customer@loan.com'],
-            [
-                'name' => 'Kakkada (Customer)',
-                'role' => 'customer',
-                'password' => $password,
-                'email_verified_at' => now(),
-            ]
+            ['name' => 'Dara Sok', 'role' => 'customer', 'password' => $password, 'email_verified_at' => now()]
         );
+
+        // 5. Run all Master Data & Demo Loan Seeders
+        $this->call([
+            CategorySeeder::class,
+            DummyDataSeeder::class,
+            DemoLoanSeeder::class,
+        ]);
     }
 }

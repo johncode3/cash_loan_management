@@ -9,12 +9,12 @@
         $isPending   = request()->routeIs('loans.pending');
         $isRepay     = request()->routeIs('repayments.*');
         $isOverdue   = request()->routeIs('dashboard.overdue');
-        $userRole    = Auth::user()?->role; // Null-safe!
+        $userRole    = Auth::user()?->role;
     @endphp
 
     <div class="sidebar-brand">
         <a href="{{ route('dashboard') }}" class="brand-link">
-            <img src="{{ asset('assets/images/AdminLTELogo.png') }}" alt="Logo" class="brand-image opacity-75 shadow">
+            <img src="{{ asset('assets/images/CashLogo.png') }}" alt="Logo" class="brand-image opacity-75 shadow">
             <span class="brand-text fw-bold text-primary ms-2">Cash Loan App</span>
         </a>
     </div>
@@ -23,7 +23,6 @@
         <nav class="mt-2" aria-label="Main navigation">
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
                 
-                {{-- Dashboard --}}
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}" class="nav-link {{ $isDashboard ? 'active' : '' }}">
                         <i class="nav-icon bi bi-speedometer2"></i>
@@ -34,7 +33,6 @@
                 {{-- LOAN OPERATIONS --}}
                 <li class="nav-header">LOAN MANAGEMENT</li>
 
-                {{-- 1. Apply Loan (Customer, Officer, Admin) --}}
                 @if(in_array($userRole, ['customer', 'loan_officer', 'admin']))
                     <li class="nav-item">
                         <a href="{{ Route::has('loans.apply') ? route('loans.apply') : '#' }}" class="nav-link {{ $isApply ? 'active' : '' }}">
@@ -44,7 +42,6 @@
                     </li>
                 @endif
 
-                {{-- 2. Pending Approvals (Loan Officer, Admin) --}}
                 @if(in_array($userRole, ['admin', 'loan_officer']))
                     <li class="nav-item">
                         <a href="{{ Route::has('loans.pending') ? route('loans.pending') : '#' }}" class="nav-link {{ $isPending ? 'active' : '' }}">
@@ -54,7 +51,6 @@
                     </li>
                 @endif
 
-                {{-- 3. Loan Schedules (All Authorized Users) --}}
                 <li class="nav-item">
                     <a href="{{ Route::has('loans.index') ? route('loans.index') : '#' }}" class="nav-link {{ request()->routeIs('loans.index') || request()->routeIs('loans.schedule') ? 'active' : '' }}">
                         <i class="nav-icon bi bi-calendar-check"></i>
@@ -62,7 +58,6 @@
                     </a>
                 </li>
 
-                {{-- 4. Record Repayment (Cashier, Admin) --}}
                 @if(in_array($userRole, ['admin', 'cashier']))
                     <li class="nav-item">
                         <a href="{{ Route::has('repayments.create') ? route('repayments.create') : '#' }}" class="nav-link {{ $isRepay ? 'active' : '' }}">
@@ -72,7 +67,6 @@
                     </li>
                 @endif
 
-                {{-- 5. Overdue Dashboard (Admin Only) --}}
                 @if($userRole === 'admin')
                     <li class="nav-item">
                         <a href="{{ Route::has('dashboard.overdue') ? route('dashboard.overdue') : '#' }}" class="nav-link text-danger {{ $isOverdue ? 'active' : '' }}">
@@ -82,9 +76,9 @@
                     </li>
                 @endif
 
-                {{-- MASTER DATA (Staff Only) --}}
+                {{-- DATA MANAGEMENT (Admin, Loan Officer, Cashier) --}}
                 @if(in_array($userRole, ['admin', 'loan_officer', 'cashier']))
-                    <li class="nav-header">MASTER DATA</li>
+                    <li class="nav-header">DATA MANAGEMENT</li>
 
                     <li class="nav-item">
                         <a href="{{ route('categories.index') }}" class="nav-link {{ $isCategory ? 'active' : '' }}">

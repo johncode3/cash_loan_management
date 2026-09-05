@@ -26,13 +26,13 @@
         {{-- Only show User Menu if user is actually logged in --}}
         <li class="nav-item dropdown user-menu">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="{{ asset('assets/images/AdminLTELogo.png') }}" class="user-image rounded-circle shadow" alt="Logo" style="width: 32px; height: 32px; object-fit: contain; background: #fff; padding: 2px;">
+                <img src="{{ asset('assets/images/CashLogo.png') }}" class="user-image rounded-circle shadow" alt="Logo" style="width: 32px; height: 32px; object-fit: contain; background: #fff; padding: 2px;">
                 <span class="d-none d-md-inline">{{ Auth::user()?->name }}</span>
             </a>
             
             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <li class="user-header text-bg-primary">
-                    <img src="{{ asset('assets/images/AdminLTELogo.png') }}" class="rounded-circle shadow" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; background: #fff; padding: 4px; margin-bottom: 8px;">
+                    <img src="{{ asset('assets/images/CashLogo.png') }}" class="rounded-circle shadow" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; background: #fff; padding: 4px; margin-bottom: 8px;">
                     <p>
                         {{ Auth::user()?->name }}
                         <small>{{ ucfirst(Auth::user()?->role ?? 'User') }} • Cash Loan Management</small>

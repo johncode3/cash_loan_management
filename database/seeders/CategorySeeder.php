@@ -12,7 +12,7 @@ class CategorySeeder extends Seeder
         $categories = [
             [
                 'name'        => 'Personal Loan',
-                'description' => 'កម្ចីផ្ទាល់ខ្លួន - Short-term quick cash loan for personal expenses, medical emergencies, and daily needs.',
+                'description' => 'កម្ចីផ្ទាល់ខ្លួន - Short-term quick cash loan for daily living expenses and personal needs.',
             ],
             [
                 'name'        => 'Business / SME Loan',
@@ -20,27 +20,28 @@ class CategorySeeder extends Seeder
             ],
             [
                 'name'        => 'Agriculture Loan',
-                'description' => 'កម្ចីកសិកម្ម - Seasonal financing for crop cultivation, fertilizer, seeds, and agricultural machinery.',
+                'description' => 'កម្ចីកសិកម្ម - Seasonal financing for crop cultivation, fertilizer, seeds, and farm machinery.',
             ],
             [
                 'name'        => 'Education Loan',
-                'description' => 'កម្ចីការសិក្សា - Tuition fee support for university students and vocational training programs.',
+                'description' => 'កម្ចីការសិក្សា - Tuition fee support for university students and technical vocational training.',
             ],
             [
                 'name'        => 'Home Improvement Loan',
-                'description' => 'កម្ចីជួសជុលផ្ទះ - Financing for home renovations, roof repairs, water sanitation, and solar installation.',
+                'description' => 'កម្ចីជួសជុលផ្ទះ - Financing for roof repairs, house renovation, water sanitation, and construction.',
             ],
             [
                 'name'        => 'Vehicle / Motor Loan',
-                'description' => 'កម្ចីទិញយានយន្ត - Installment financing for purchasing motorcycles, tuk-tuks, and delivery vehicles.',
+                'description' => 'កម្ចីទិញយានយន្ត - Installment financing for purchasing motorcycles, passapp tuk-tuks, and delivery cars.',
+            ],
+            [
+                'name'        => 'Emergency Quick Cash',
+                'description' => 'កម្ចីបន្ទាន់ - Fast 24-hour emergency disbursement for urgent healthcare and hospital bills.',
             ],
         ];
 
-        foreach ($categories as $category) {
-            Category::updateOrCreate(
-                ['name' => $category['name']],
-                ['description' => $category['description']]
-            );
+        foreach ($categories as $cat) {
+            Category::updateOrCreate(['name' => $cat['name']], ['description' => $cat['description']]);
         }
     }
 }

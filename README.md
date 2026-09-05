@@ -1,58 +1,208 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Cash Loan Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A role-based cash loan management application built with Laravel, Blade, MySQL, and Vite. It supports customer and staff records, loan applications, approval and disbursement, repayment schedules, cashier repayments, and overdue monitoring.
 
-## About Laravel
+## Current Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Authentication and roles
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Session authentication provided by Laravel Breeze.
+- Role middleware registered as `role` in `bootstrap/app.php`.
+- Supported roles: `admin`, `loan_officer`, `cashier`, and `customer`.
+- `customer`, `loan_officer`, and `admin` can submit loan applications.
+- `loan_officer` and `admin` can review and approve pending loans.
+- `cashier` and `admin` can record repayments.
+- `admin` can disburse loans, view overdue schedules, manage employees, and manage users.
+- `admin`, `loan_officer`, and `cashier` can manage categories and customers.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Loan workflow
 
-## Learning Laravel
+The implemented loan status values are:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```text
+Pending -> Approved -> Disbursed
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+- Customers can apply for loans online.
+- Staff can submit walk-in applications for active customers.
+- Loan applications store the customer, category, principal amount, interest rate, term, creator, and status.
+- Approved loans can be disbursed by an administrator.
+- Disbursement runs inside a database transaction and generates the repayment schedule.
+- Loan details and installment schedules are available from the loan pages.
 
-## Contributing
+### Amortization and repayments
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Schedules use a reducing-balance calculation with the monthly payment formula:
 
-## Code of Conduct
+$$
+\text{Monthly Payment} = P \times \frac{r(1+r)^n}{(1+r)^n - 1}
+$$
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Where `P` is the principal, `r` is the monthly interest rate as a decimal, and `n` is the number of months. The final installment adjusts the remaining principal after rounding.
 
-## Security Vulnerabilities
+- Schedule rows contain installment number, due date, principal due, interest due, total due, status, and paid date.
+- Schedule statuses are `Pending`, `Paid`, and `Overdue`.
+- Cashiers can record cash or another selected payment method.
+- Payments are applied in order to unpaid schedules. Fully covered installments become `Paid`; a partially covered installment remains unpaid.
+- Loan and repayment totals are shown on the loan detail page.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Dashboards and administration
 
-## License
+- Staff dashboard metrics include total disbursed, pending applications, overdue schedules, total collected, and customer count.
+- Customers see their active loan, next payment, and remaining balance on the dashboard.
+- Administrators have an overdue dashboard with search, pagination, and total overdue amount.
+- CRUD screens are available for users, employees, customers, and categories.
+- A `LoanPolicy` class exists for loan authorization rules, while route access is currently enforced through the `role` middleware.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Technology Stack
+
+| Layer | Technology |
+| --- | --- |
+| Backend | Laravel 13.22, PHP 8.3+ |
+| Authentication | Laravel Breeze 2.4 |
+| Database | MySQL or MariaDB |
+| Views | Blade templates |
+| Frontend build | Vite 8, Tailwind CSS 3, Alpine.js |
+| Icons | Bootstrap Icons |
+| Testing | Pest 4 and PHPUnit |
+
+The current development environment reports PHP 8.5. The Composer requirement is PHP `^8.3`.
+
+## Database Structure
+
+The application includes these main tables:
+
+- `users`: authenticated accounts and roles.
+- `customers`: borrower profiles with unique customer codes.
+- `employees`: staff records, departments, positions, salaries, and status.
+- `categories`: loan product categories.
+- `loans`: customer loans, principal, interest rate, term, status, disbursement date, and creator.
+- `loan_schedules`: generated installment breakdowns for each loan.
+- `repayments`: payment amount, date, method, receiving user, loan, and schedule.
+
+Relationships:
+
+```text
+customers 1 --- many loans
+categories 1 --- many loans
+loans 1 --- many loan_schedules
+loans 1 --- many repayments
+users 1 --- many loans (created_by)
+users 1 --- many repayments (received_by)
+```
+
+## Main Routes
+
+Run `php artisan route:list --except-vendor` to see the complete route table. Main application route names include:
+
+| Area | Route names |
+| --- | --- |
+| Dashboard | `dashboard`, `dashboard.overdue` |
+| Loans | `loans.index`, `loans.apply`, `loans.pending`, `loans.show`, `loans.schedule`, `loans.approve`, `loans.disburse` |
+| Repayments | `repayments.create`, `repayments.store` |
+| Customers | `customers.*` |
+| Categories | `categories.*` |
+| Employees | `employees.*` |
+| Users | `users.*` |
+| Profile | `profile.edit`, `profile.update`, `profile.destroy` |
+
+Application routes are authenticated unless they are part of the Breeze authentication routes.
+
+## Installation
+
+### 1. Install dependencies
+
+```bash
+composer install
+npm install
+```
+
+### 2. Configure the environment
+
+Copy `.env.example` to `.env`, configure the database, and generate the application key:
+
+```bash
+php artisan key:generate
+```
+
+Example MySQL configuration:
+
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=cash_loan_management
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### 3. Create the database and seed demo data
+
+```bash
+php artisan migrate:fresh --seed
+php artisan storage:link
+```
+
+`DatabaseSeeder` creates demo accounts, categories, customers, employees, and demo loans.
+
+### 4. Build and run the application
+
+```bash
+npm run build
+php artisan serve
+```
+
+Open `http://127.0.0.1:8000` in a browser. During development, `composer run dev` starts the Laravel server, queue listener, and Vite together.
+
+## Demo Accounts
+
+All accounts seeded by `DatabaseSeeder` use the password `password123`.
+
+| Role | Email | Main access |
+| --- | --- | --- |
+| Admin | `admin@loan.com` | Disbursement, overdue dashboard, employees, users |
+| Loan officer | `officer@loan.com` | Applications and pending-loan approval |
+| Loan officer | `officer2@loan.com` | Applications and pending-loan approval |
+| Cashier | `cashier@loan.com` | Repayment recording |
+| Cashier | `cashier2@loan.com` | Repayment recording |
+| Customer | `customer@loan.com` | Own dashboard and loan application |
+
+## Scheduled Overdue Check
+
+The `loans:check-overdue` command marks pending installments whose due date has passed as `Overdue`.
+
+Run it manually:
+
+```bash
+php artisan loans:check-overdue
+```
+
+The command is scheduled daily in `routes/console.php`. To run Laravel's scheduler locally, use:
+
+```bash
+php artisan schedule:work
+```
+
+## Testing
+
+Run the complete test suite:
+
+```bash
+php artisan test
+```
+
+Current focused coverage includes:
+
+- `tests/Unit/LoanAmortizationTest.php`: verifies principal totals for six- and twelve-month schedules.
+- `tests/Feature/LoanAuthorizationTest.php`: verifies guest redirects, role restrictions, and administrator employee access.
+- Laravel Breeze authentication, profile, password, registration, and email verification tests.
+
+## Useful Commands
+
+```bash
+php artisan route:list --except-vendor
+php artisan about
+php artisan loans:check-overdue
+php artisan test
+npm run build
+```

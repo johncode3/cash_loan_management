@@ -20,7 +20,6 @@ class LoanController extends Controller
         $myCustomer = null;
         $customers = collect();
 
-        // 1. If Logged in as CUSTOMER -> Auto-find or create their Customer profile
         if ($user->role === 'customer') {
             $nameParts = explode(' ', $user->name, 2);
             $firstName = $nameParts[0] ?? $user->name;
@@ -40,7 +39,6 @@ class LoanController extends Controller
                 ]
             );
         } else {
-            // 2. If Logged in as LOAN OFFICER / ADMIN -> Load dropdown list for walk-in clients
             $customers = Customer::where('status', 'Active')->orderBy('first_name')->get();
         }
 
@@ -52,8 +50,6 @@ class LoanController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-
-        // 1. Security Check: If customer, force their own customer ID (prevent tampering)
         if ($user->role === 'customer') {
             $customer = Customer::where('email', $user->email)->first();
             $customerId = $customer ? $customer->id : $request->customer_id;
@@ -177,10 +173,9 @@ class LoanController extends Controller
             'category',
             'creator',
             'schedules',
-            'repayments.cashier', // Real Repayments!
+            'repayments.cashier',
         ])->findOrFail($id);
 
-        // Task B.12: Live Dynamic Financial Calculations
         $totalPrincipal   = (float) $loan->principal_amount;
         $totalScheduleDue = (float) $loan->schedules->sum('total_due');
         $totalPaid        = (float) $loan->repayments->sum('amount_paid');
