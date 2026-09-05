@@ -132,3 +132,17 @@
      - `DemoLoanSeeder`: 4 live demo contracts (1 Pending, 1 Approved, 1 Active Disbursed, 1 Overdue).
    - Created comprehensive project `README.md` with architecture diagrams and test cheat sheets.
    - Generated final `CHANGELOG.md` development log.
+
+---
+
+### =======================================================
+### Session 9: Customer Account Provisioning & Footer Polish
+**Date:** 05 September 2026 | **Time:** 5:00 PM – 5:30 PM
+### =======================================================
+
+1. **Automated Customer Login Provisioning:**
+   - Updated `CustomerController@store` with `DB::transaction()` to automatically create a `User` login account (`role = 'customer'`, temporary password `password123`) whenever staff onboards a walk-in customer at the branch.
+   - Ensures all customers (whether registering online via Breeze or created by branch staff) can immediately log into the web portal to view their loan schedules.
+
+2. **Layout Footer Branding & Dynamic Metadata:**
+   - Customized the application footer (`app-footer`) with dynamic year `{{ date('Y') }}`.
